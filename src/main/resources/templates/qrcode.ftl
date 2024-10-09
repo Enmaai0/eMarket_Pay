@@ -11,7 +11,7 @@
     <script src="https://cdn.bootcdn.net/ajax/libs/jquery.qrcode/1.0/jquery.qrcode.min.js"></script>
     <script>
         jQuery('#wechatQrcode').qrcode({
-            text: "weixin://wxpay/bizpayurl?pr=XPWqFIqz1"
+            text: "${codeUrl}"
             }
         );
     </script>
