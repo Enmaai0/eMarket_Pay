@@ -7,4 +7,6 @@ import java.math.BigDecimal;
 @Component
 public interface PayService {
     PayResponse create(String orderId, BigDecimal amount);
+
+    String asyncNotify(String notifyData);
 }
