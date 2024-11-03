@@ -57,4 +57,13 @@ public class PayServiceIml implements PayService {
 
         return "{\"code\":\"SUCCESS\",\"msg\":\"成功\"}";
     }
+
+    @Override
+    public PayInfo queryByOrderId(Long orderId) {
+        PayInfo payInfo = payInfoMapper.selectByOrderNo(orderId);
+        if (payInfo == null) {
+            throw new RuntimeException("Order number not found");
+        }
+        return payInfo;
+    }
 }
