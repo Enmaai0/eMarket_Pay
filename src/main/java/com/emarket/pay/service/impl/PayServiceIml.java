@@ -3,12 +3,14 @@ package com.emarket.pay.service.impl;
 import com.emarket.pay.dao.PayInfoMapper;
 import com.emarket.pay.pojo.PayInfo;
 import com.emarket.pay.service.PayService;
+import com.google.gson.Gson;
 import com.lly835.bestpay.enums.BestPayTypeEnum;
 import com.lly835.bestpay.enums.OrderStatusEnum;
 import com.lly835.bestpay.model.PayRequest;
 import com.lly835.bestpay.model.PayResponse;
 import com.lly835.bestpay.service.BestPayService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -20,6 +22,9 @@ public class PayServiceIml implements PayService {
     private BestPayService bestPayService;
     @Autowired
     private PayInfoMapper payInfoMapper;
+    @Autowired
+    private AmqpTemplate amqpTemplate;
+
     @Override
     public PayResponse create(String orderId, BigDecimal amount) {
         PayInfo payInfo = new PayInfo(Long.parseLong(orderId), 2, OrderStatusEnum.NOTPAY.name(), amount);
@@ -54,6 +59,8 @@ public class PayServiceIml implements PayService {
             payInfo.setUpdateTime(null);
             payInfoMapper.updateByPrimaryKey(payInfo);
         }
+
+        amqpTemplate.convertAndSend("payNotify", new Gson().toJson(payInfo));
 
         return "{\"code\":\"SUCCESS\",\"msg\":\"成功\"}";
     }
